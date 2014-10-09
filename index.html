@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate deadlines for your projects.</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <a href='#' id='authorize-button' onclick='handleAuthClick();'>Login</a>
+        <h1>Create new project/event</h1>
+        <form role="form">
+            <div class="form-group">
+                <label for="title">Event Name</label>
+                <input type="text" class="form-control" id="title" placeholder="Enter name for event">
+            </div>
+            <a href="#" class="btn btn-default">Submit</a>
+        </form>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//apis.google.com/js/client.js?onload=handleClientLoad"></script>
+    <script src="script.js"></script>
+</body>
+</html>
