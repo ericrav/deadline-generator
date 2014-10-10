@@ -1,24 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="dgApp">
 <head>
     <title>Generate deadlines for your projects.</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </head>
-<body>
+<body ng-controller='MainCtrl'>
     <div class="container">
-        <a href='#' id='authorize-button' onclick='handleAuthClick();'>Login</a>
+        <a href='#' id='authorize-button' ng-click='handleAuthClick();'>Login</a>
         <h1>Create new project/event</h1>
         <form role="form">
             <div class="form-group">
                 <label for="title">Event Name</label>
-                <input type="text" class="form-control" id="title" placeholder="Enter name for event">
+                <input type="text" class="form-control" id="title" placeholder="Enter name for event" ng-model="title">
             </div>
-            <a href="#" class="btn btn-default">Submit</a>
+            <div class="form-group">
+                <label for="title">Calendar</label>
+                <select class="form-control" ng-model="calendar">
+                    <option ng-repeat="cal in calendars" ng-value="cal.id">{{cal.summary}}</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="date">Event Date/Final Deadline</label>
+                <input type="date" class="form-control" id="date" ng-model="date">
+            </div>
+            <a href="#" class="btn btn-default" ng-click="createEvent()">Submit</a>
         </form>
     </div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
     <script src="//apis.google.com/js/client.js?onload=handleClientLoad"></script>
     <script src="script.js"></script>
 </body>
