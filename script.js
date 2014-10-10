@@ -58,10 +58,8 @@ function MainCtrl($scope) {
                 "calendarId": $scope.calendar,
                 "resource": data
             });
-            request.execute(function(resp) {
-                console.log(resp);
-                // console.log($scope.calendars);
-                // $scope.$apply();
+            request.execute(function(res) {
+                console.log(res);
             });
         });
     }
@@ -69,9 +67,9 @@ function MainCtrl($scope) {
     function makeApiCall() {
         gapi.client.load('calendar', 'v3', function() {
             var request = gapi.client.calendar.calendarList.list();
-            request.execute(function(resp) {
-                for (var i = 0; i < resp.items.length; i++) {
-                    var c = resp.items[i]; // calendar object
+            request.execute(function(res) {
+                for (var i = 0; i < res.items.length; i++) {
+                    var c = res.items[i]; // calendar object
                     if (c.accessRole == 'owner' || c.accessRole == 'writer') $scope.calendars.push(c); // only add if user has write priveleges
                 }
                 console.log($scope.calendars);
