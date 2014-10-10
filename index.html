@@ -3,6 +3,7 @@
 <head>
     <title>Generate deadlines for your projects.</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body ng-controller='MainCtrl'>
     <div class="container">
@@ -25,7 +26,61 @@
             </div>
             <a href="#" class="btn btn-default" ng-click="createEvent()">Submit</a>
         </form>
+
+        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#templateModal">
+            Create Template
+        </button>
     </div>
+
+    <!-- Create Template Modal -->
+    <div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="modal-title">Create Template</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="template-name">Template Name</label>
+                        <input type="text" class="form-control" id="template-name" 
+                               placeholder="Enter name for template" ng-model="templateName">
+                    </div>
+                    <div class="template-event" ng-repeat="event in templateEvents">
+                        <div class="form-group">
+                            <label for="event{{$index}}name">Event Name</label>
+                            <input type="text" class="form-control" id="event{{$index}}name" 
+                                   placeholder="Enter name for event" ng-model="event.summary">
+                        </div>
+                        <div class="form-group">
+                            <label for="event{{$index}}details">Event Details</label>
+                            <input type="text" class="form-control" id="event{{$index}}details" 
+                                   placeholder="Enter name for event" ng-model="event.description">
+                        </div>
+                        <div class="form-group">
+                            <label for="title">Calendar</label>
+                            <select class="form-control" ng-model="event.calendarId">
+                                <option ng-repeat="cal in calendars" ng-value="cal.id">{{cal.summary}}</option>
+                            </select>
+                        </div>
+                        <div ng-if="templateEvents.length > 1">
+                            <span class="delete glyphicon glyphicon-trash" ng-click="deleteTemplateEvent($index)"></span>
+                            <span class="deleteText"> Delete event from template</span>
+                        </div>
+                    </div>
+                    <a href="" ng-click="addTemplateEvent()">Add another event to template</a>
+                    <a href="data:text/json;charset=utf-8,{{templateEvents | encodeDownload}}" 
+                       download="{{templateName || 'template-export'}}.json">download JSON</a>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js" ></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>

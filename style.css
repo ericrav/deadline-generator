@@ -1,0 +1,16 @@
+.template-event {
+    border-radius: 3px;
+    background-color: #e5e5e5;
+    padding: 20px;
+    margin: 4px auto;
+}
+.template-event label {
+    color: #222;
+}
+.delete {
+    cursor: pointer;
+    color: #d44950;
+}
+.delete:hover {
+    opacity: .6;
+}

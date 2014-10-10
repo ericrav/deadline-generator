@@ -2,10 +2,31 @@ var clientId = '658261560622-ddrg4ivsu92qda9u4i1cnanid965sscd.apps.googleusercon
 var apiKey = 'AIzaSyB3zI1irAMQdxGjf5uwMcz4T14jPPwb_kk';
 var scopes = 'https://www.googleapis.com/auth/calendar';
 
-angular.module('dgApp', []);
+angular.module('dgApp', [])
+.filter('encodeDownload', function() {
+    return function (input) {
+        return encodeURIComponent(JSON.stringify(input));
+    };
+})
+.config( [
+    '$compileProvider',
+    function ($compileProvider) { // bypass angular href unsafe problem by whitelisting data: links
+        $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
+        // Angular before v1.2 uses $compileProvider.urlSanitizationWhitelist(...)
+    }
+]);
 function MainCtrl($scope) {
 
     $scope.calendars = []; // array for users calendars
+    $scope.templateEvents = [{}];
+
+    $scope.addTemplateEvent = function() {
+        $scope.templateEvents.push({});
+    };
+
+    $scope.deleteTemplateEvent = function(i) {
+        if ($scope.templateEvents.length > 1) $scope.templateEvents.splice(i, 1);
+    }
 
     // src: http://googleappsdeveloper.blogspot.com/2011/12/using-new-js-library-to-unlock-power-of.html
     function handleClientLoad() {
