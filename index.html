@@ -59,6 +59,29 @@
                             <input type="text" class="form-control" id="event{{$index}}details" 
                                    placeholder="Enter name for event" ng-model="event.description">
                         </div>
+                        
+                        <div class="form-group">
+                            <label>How To Calculate Date</label>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.datecalc" value="percent">
+                                    Calculate date by percentage
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.datecalc" value="afterstart">
+                                    Calculate by number of days after start date    
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.datecalc" value="beforeend">
+                                    Calculate by number of days before end date
+                                </label>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <label for="title">Calendar</label>
                             <select class="form-control" ng-model="event.calendarId">
@@ -70,8 +93,8 @@
                             <span class="deleteText"> Delete event from template</span>
                         </div>
                     </div>
-                    <a href="" ng-click="addTemplateEvent()">Add another event to template</a>
-                    <a href="data:text/json;charset=utf-8,{{templateEvents | encodeDownload}}" 
+                    <a class="btn btn-default" href="" ng-click="addTemplateEvent()">Add another event to template</a>
+                    <a class="btn btn-default" href="data:text/json;charset=utf-8,{{templateEvents | encodeDownload}}" 
                        download="{{templateName || 'template-export'}}.json">download JSON</a>
                 </div>
                 <div class="modal-footer">

@@ -21,11 +21,11 @@ function MainCtrl($scope) {
     $scope.templateEvents = [{}];
 
     $scope.addTemplateEvent = function() {
-        $scope.templateEvents.push({});
+        $scope.templateEvents.push({}); // add new event to template
     };
 
     $scope.deleteTemplateEvent = function(i) {
-        if ($scope.templateEvents.length > 1) $scope.templateEvents.splice(i, 1);
+        if ($scope.templateEvents.length > 1) $scope.templateEvents.splice(i, 1); // don't delete original event (there must be 1)
     }
 
     // src: http://googleappsdeveloper.blogspot.com/2011/12/using-new-js-library-to-unlock-power-of.html
