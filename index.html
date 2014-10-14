@@ -5,9 +5,11 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body ng-controller='MainCtrl'>
-    <div class="container">
-        <a href='#' id='authorize-button' ng-click='handleAuthClick();'>Login</a>
+<body ng-controller='MainCtrl' ng-class="calendars.length ? 'loggedin' : ''">
+    <div class="login" ng-if="!calendars.length">
+        <a class="btn btn-lg btn-primary" href='#' id='authorize-button' ng-click='handleAuthClick();'>Login to Google Calendar</a>
+    </div>
+    <div class="container" ng-class="calendars.length ? 'loggedin' : ''">
         <h1>Create new project/event</h1>
         <form role="form">
             <div class="form-group">
@@ -24,12 +26,26 @@
                 <label for="date">Event Date/Final Deadline</label>
                 <input type="date" class="form-control" id="date" ng-model="date">
             </div>
-            <a href="#" class="btn btn-default" ng-click="createEvent()">Submit</a>
+            <div class="form-group">
+                <label for="date">Project Start</label>
+                <input type="date" class="form-control" id="date" ng-model="startDate">
+                <label>Days Before: </label>
+                <span> {{dateDiff(date, startDate)}}</span>
+            </div>
+            <label>Template: </label><span>{{templateName}}</span>
         </form>
 
-        <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#templateModal">
+        <button class="btn btn-primary" data-toggle="modal" data-target="#templateModal">
             Create Template
         </button>
+        <span> &mdash; or &mdash; </span>
+         <button class="btn btn-default" onclick="$('#choosefile').click()">
+            Upload Template
+        </button>
+        <input type="file" file-upload id="choosefile">
+        <br>
+        <br>
+        <button href="#" class="btn btn-lg btn-primary" ng-click="createEvent()">Submit</button>
     </div>
 
     <!-- Create Template Modal -->
@@ -43,6 +59,7 @@
                     <h4 class="modal-title" id="modal-title">Create Template</h4>
                 </div>
                 <div class="modal-body">
+                    <p>Note: Use <em>%event</em> in name or description to automatically fill in the name of the main event when generating from template</p>
                     <div class="form-group">
                         <label for="template-name">Template Name</label>
                         <input type="text" class="form-control" id="template-name" 
@@ -57,9 +74,9 @@
                         <div class="form-group">
                             <label for="event{{$index}}details">Event Details</label>
                             <input type="text" class="form-control" id="event{{$index}}details" 
-                                   placeholder="Enter name for event" ng-model="event.description">
+                                   placeholder="Enter details for event" ng-model="event.description">
                         </div>
-                        
+
                         <div class="form-group">
                             <label>How To Calculate Date</label>
                             <div class="radio">
@@ -81,8 +98,57 @@
                                 </label>
                             </div>
                         </div>
+                        <div class="form-group" ng-if="event.datecalc">
+                            <label for="template-date" ng-if="event.datecalc=='percent'">Percentage of days from start to end (0-100)</label>
+                            <label for="template-date" ng-if="event.datecalc=='afterstart'">Number of days after start</label>
+                            <label for="template-date" ng-if="event.datecalc=='beforeend'">Number of days before end</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="template-date" 
+                                       placeholder="Number" ng-model="event.templateDate">
+                                <span class="input-group-addon" ng-if="event.datecalc=='percent'">%</span>
+                            </div>
+                        </div>
 
                         <div class="form-group">
+                            <label>Send Email Reminder?</label>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.reminder" value="1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.reminder" value="0">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="event.reminder">
+                            <label for="template-daysBefore">Days before date of template item</label>
+                            <input type="number" class="form-control" id="template-daysBefore" 
+                                       placeholder="Days before date of template item" ng-model="event.reminderDays">
+                            
+                        </div>
+
+                        <div class="form-group">
+                            <label>Use main event's calendar?</label>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.defaultCalendar" value="1">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" ng-model="event.defaultCalendar" value="0">
+                                    No, Select Different Calendar
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group" ng-if="event.defaultCalendar=='0'">
                             <label for="title">Calendar</label>
                             <select class="form-control" ng-model="event.calendarId">
                                 <option ng-repeat="cal in calendars" ng-value="cal.id">{{cal.summary}}</option>
@@ -95,11 +161,12 @@
                     </div>
                     <a class="btn btn-default" href="" ng-click="addTemplateEvent()">Add another event to template</a>
                     <a class="btn btn-default" href="data:text/json;charset=utf-8,{{templateEvents | encodeDownload}}" 
-                       download="{{templateName || 'template-export'}}.json">download JSON</a>
+                       download="{{templateName || 'unnamed'}}-template-export.json">Export Template</a>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                    <a href="data:text/json;charset=utf-8,{{templateEvents | encodeDownload}}" 
+                       download="{{templateName || 'unnamed'}}-template-export.json" ng-click="saveTemplate()" type="button" class="btn btn-primary">Save and Export Template</a>
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
